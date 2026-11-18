@@ -9,7 +9,7 @@ Automated API testing suite built with **Postman** and executed via **Newman CLI
 ## Project Structure
 
 ```
-newman-tests/
+project-folder/
 ├── API-Automation.postman_collection.json       # Postman API test collection
 ├── User-Environment.postman_environment.json    # Environment variables configuration
 ├── newman/                                      # Auto-generated JSON test reports
