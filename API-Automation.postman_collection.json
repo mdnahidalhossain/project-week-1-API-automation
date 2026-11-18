@@ -1,0 +1,104 @@
+{
+  "info": {
+    "_postman_id": "218fa6af-3107-455d-abae-97d8c59c0d71",
+    "name": "API-Automation",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "46319319",
+    "_collection_link": "https://go.postman.co/collection/46319319-218fa6af-3107-455d-abae-97d8c59c0d71?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Get Users",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// Status code should be 200.\r\npm.test(\"Status code is 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\nconst responseData = pm.response.json();\r\n\r\n//Response should be a non-empty array\r\npm.test(\"Response is a non-empty array\", function () {\r\n    pm.expect(responseData).to.exist;\r\n    pm.expect(responseData).to.not.be.empty;\r\n});\r\n\r\n// Response should contain user information\r\npm.test(\"Response contains user information\", function () {\r\n    pm.expect(responseData).to.be.an(\"array\");\r\n    pm.expect(responseData.length).to.be.above(0);\r\n});\r\n\r\n//Each user should have an id, name, and email\r\npm.test(\"Each user has an id, name, and email\", function () {\r\n    responseData.forEach(function(user, index) {\r\n        pm.expect(user, `User at index ${index} should be an object`).to.be.an(\"object\");\r\n        \r\n        // Validate id\r\n        pm.expect(user).to.have.property(\"id\");\r\n        pm.expect(user.id, `User[${index}].id should be a number`).to.be.a(\"number\");\r\n        \r\n        // Validate name\r\n        pm.expect(user).to.have.property(\"name\");\r\n        pm.expect(user.name, `User[${index}].name should be a non-empty string`).to.be.a(\"string\").and.not.be.empty;\r\n        \r\n        // Validate email\r\n        pm.expect(user).to.have.property(\"email\");\r\n        pm.expect(user.email, `User[${index}].email should be a non-empty string`).to.be.a(\"string\").and.not.be.empty;\r\n    });\r\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            ""
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Single User by ID",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// Status code should be 200.\r\npm.test(\"Status code is 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\nconst responseData = pm.response.json();\r\n\r\n//Response should be a non-empty array\r\npm.test(\"Response is a non-empty array\", function () {\r\n    pm.expect(responseData).to.exist;\r\n    pm.expect(responseData).to.not.be.empty;\r\n});\r\n\r\n// Response should contain user information\r\npm.test(\"Response contains user information\", function () {\r\n    pm.expect(responseData).to.be.an(\"object\");\r\n    pm.expect(responseData).to.have.property(\"id\");\r\n    pm.expect(responseData).to.have.property(\"name\");\r\n    pm.expect(responseData).to.have.property(\"email\");\r\n});\r\n\r\n//Each user should have an id, name, and email\r\npm.test(\"Each user field (id, name, email) is present and valid\", function () {\r\n    pm.expect(responseData.id).to.be.a(\"number\");\r\n    pm.expect(responseData.name).to.be.a(\"string\").and.not.be.empty;\r\n    pm.expect(responseData.email).to.be.a(\"string\").and.not.be.empty;\r\n});\r\n\r\n"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/{{id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "{{id}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Update User",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\n// Parse the response JSON and the sent request payload\r\nconst responseData = pm.response.json();\r\nconst sentPayload = JSON.parse(pm.request.body.raw);\r\n\r\n// Retrieve the expected ID from your environment variable\r\nconst expectedId = Number(pm.variables.get(\"id\"));\r\n\r\n// 1. Validate: The returned ID should be the same as the ID stored in the variable\r\npm.test(\"Returned ID matches the stored ID variable\", function () {\r\n    pm.expect(responseData.id).to.eql(expectedId);\r\n});\r\n\r\n// 2. Validate: Phone should not be empty\r\npm.test(\"Phone is not empty\", function () {\r\n    pm.expect(responseData.phone).to.exist;\r\n    pm.expect(String(responseData.phone).trim()).to.not.be.empty;\r\n});\r\n\r\n// 3. Validate: Returned name should match the updated name\r\npm.test(\"Returned name matches the updated name\", function () {\r\n    pm.expect(responseData.name).to.eql(sentPayload.name);\r\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"id\": 1,\r\n    \"name\": \"{{new_name}}\",\r\n    \"username\": \"Bret\",\r\n    \"email\": \"{{new_email}}\",\r\n    \"address\": {\r\n        \"street\": \"Kulas Light\",\r\n        \"suite\": \"Apt. 556\",\r\n        \"city\": \"Gwenborough\",\r\n        \"zipcode\": \"92998-3874\",\r\n        \"geo\": {\r\n            \"lat\": \"-37.3159\",\r\n            \"lng\": \"81.1496\"\r\n        }\r\n    },\r\n    \"phone\": \"1-770-736-8031 x56442\",\r\n    \"website\": \"hildegard.org\",\r\n    \"company\": {\r\n        \"name\": \"{{new_company_name}}\",\r\n        \"catchPhrase\": \"Multi-layered client-server neural-net\",\r\n        \"bs\": \"harness real-time e-markets\"\r\n    }\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/{{id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "{{id}}"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
