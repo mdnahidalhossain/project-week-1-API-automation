@@ -8,11 +8,13 @@ Automated API testing suite built with **Postman** and executed via **Newman CLI
 
 ## Project Structure
 
+```
 newman-tests/
 ├── API-Automation.postman_collection.json       # Postman API test collection
 ├── User-Environment.postman_environment.json    # Environment variables configuration
 ├── newman/                                      # Auto-generated JSON test reports
 └── report.html                                  # Exported HTML test report
+```
 
 ## How to Run
 1. Open new Terminal
